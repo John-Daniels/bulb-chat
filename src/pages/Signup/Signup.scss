@@ -1,0 +1,79 @@
+:root {
+  --darkBlue: #4e0eff;
+  --darkIndigo: #00000076;
+  --lightIndigo: #131324;
+  --lightPurple: #997af0;
+}
+
+#signup {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  background-color: var(--lightIndigo);
+
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    img {
+      height: 5rem;
+    }
+    h1 {
+      color: white;
+      text-transform: uppercase;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: var(--darkIndigo);
+    border-radius: 2rem;
+    padding: 3rem 5rem;
+
+    input {
+      background-color: transparent;
+      padding: 1rem;
+      border-radius: 0.4rem;
+      border: 0.1rem solid var(--darkBlue);
+      color: white;
+      width: 100%;
+      font-size: 1rem;
+      outline: none;
+      &:focus {
+        border: 0.1rem solid var(--lightPurple);
+      }
+    }
+    button {
+      background-color: var(--lightPurple);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 0.4rem;
+      font-size: 1rem;
+      text-transform: uppercase;
+      transition: 0.5s ease-in-out;
+      &:hover {
+        background-color: var(--darkBlue);
+      }
+    }
+    span {
+      color: white;
+      text-transform: uppercase;
+      a {
+        color: var(--darkBlue);
+        font-weight: bold;
+        text-decoration: none;
+      }
+    }
+  }
+}

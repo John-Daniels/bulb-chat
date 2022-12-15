@@ -1,0 +1,1 @@
+export const profileStorageKey = "bulb-chat-user"
