@@ -1,0 +1,1 @@
+export const loadBase64Img = (img: string) => `data:image/svg+xml;base64,${img}`
