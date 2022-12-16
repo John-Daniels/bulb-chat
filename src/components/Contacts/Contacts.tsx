@@ -52,7 +52,7 @@ const Contacts = ({ contacts, user, changeChat }: ContactsProps) => {
 
       <div className="current-user">
         <div className="avater">
-          <img src={loadBase64Img(user.avater!)} alt="" />
+          <img src={loadBase64Img(user.avater!)} alt="avater" />
         </div>
         <div className="username">
           <h2>{user.username}</h2>

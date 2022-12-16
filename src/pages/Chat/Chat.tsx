@@ -6,6 +6,7 @@ import Contacts from "../../components/Contacts/Contacts";
 import Welcome from "../../components/Welcome/Welcome";
 import API from "../../constants/api.constant";
 import useRequest from "../../hooks/request.hook";
+import useSocket from "../../hooks/socket.hook";
 import { useAppSelector } from "../../store";
 import { ProfileState } from "../../store/profile.slice";
 import "./Chat.scss";
@@ -14,6 +15,7 @@ const Chat = () => {
   const makeRequest = useRequest();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const socket = useSocket();
 
   // userdata
   const user = useAppSelector((state) => state.profileSlice) as ProfileState;
@@ -21,10 +23,16 @@ const Chat = () => {
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState<any>(undefined);
 
+  //  check if there is an avater and redirect
   useEffect(() => {
-    if (!user.avater) navigate("/avater");
+    if (user && user.avater == null) navigate("/avater");
   }, []);
 
+  useEffect(() => {
+    user && socket.emit("add-user", user.id);
+  }, [user]);
+
+  // get all contacts
   useEffect(() => {
     makeRequest.get(API.allUsersRoute).then(({ data }) => {
       setContacts(data.data);
@@ -44,7 +52,11 @@ const Chat = () => {
           changeChat={handleChatChange}
         />
 
-        {currentChat ? <ChatContainer /> : <Welcome user={user} />}
+        {currentChat ? (
+          <ChatContainer chat={currentChat} />
+        ) : (
+          <Welcome user={user} />
+        )}
       </div>
     </div>
   );

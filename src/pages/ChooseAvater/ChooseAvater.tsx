@@ -10,11 +10,14 @@ import { toast } from "react-toastify";
 import { profileStorageKey } from "../../constants/index.constant";
 import { ResponsePayload } from "../../utils/types/response.type";
 import API from "../../constants/api.constant";
+import { useDispatch } from "react-redux";
+import { profileUpdateAction } from "../../store/profile.slice";
 
 const ChooseAvater = () => {
   const api = "https://api.multiavatar.com/45678945";
   const navigate = useNavigate();
   const makeRequest = useRequest();
+  const dispatch = useDispatch();
   const [avaters, setAvaters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAvater, setSelectedAvater] = useState<any>(undefined);
@@ -23,15 +26,15 @@ const ChooseAvater = () => {
     if (selectedAvater === undefined) {
       toast.error("Please select an Avater");
     } else {
-      const user = await JSON.parse(localStorage.getItem(profileStorageKey)!);
       try {
         const { data: res } = await makeRequest.post(API.avater, {
           avater: avaters[selectedAvater],
         });
 
-        const { message } = res as ResponsePayload;
+        const { message, data } = res as ResponsePayload;
         toast(message);
 
+        dispatch(profileUpdateAction(data));
         navigate("/");
       } catch ({ response: { data } }) {
         const { message } = data as ResponsePayload;
