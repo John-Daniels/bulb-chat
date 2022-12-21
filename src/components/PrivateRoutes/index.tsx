@@ -38,8 +38,11 @@ const PrivateRoute = () => {
         const notAuth = [401, 403];
         const res = e.response;
         if (notAuth.includes(res.status)) {
-          dispatch(profileLogoutAction());
-          toast("try login again!");
+          if (token) {
+            dispatch(profileLogoutAction());
+            toast("try login again!");
+          }
+
           navigate("/login");
         }
       });
