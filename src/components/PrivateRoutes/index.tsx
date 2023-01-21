@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux/es/exports";
-import { useSelector } from "react-redux/es/hooks/useSelector";
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import API from "../../constants/api.constant";
-import { profileStorageKey } from "../../constants/index.constant";
 import useRequest from "../../hooks/request.hook";
 import { useAppSelector } from "../../store";
 import {
@@ -30,9 +28,7 @@ const PrivateRoute = () => {
           data: { data },
         } = res;
 
-        // if (res.status == 200) {
         data && dispatch(profileUpdateAction(data));
-        // }
       })
       .catch((e) => {
         const notAuth = [401, 403];

@@ -38,7 +38,7 @@ const Contacts = ({ contacts, user, changeChat }: ContactsProps) => {
               <div className="avater">
                 <img
                   src={contact.avater ? loadBase64Img(contact.avater) : logo}
-                  alt=""
+                  alt={`${contact.username}_avater`}
                 />
               </div>
 
@@ -52,6 +52,7 @@ const Contacts = ({ contacts, user, changeChat }: ContactsProps) => {
 
       <div className="current-user">
         <div className="avater">
+          {/* TODO: Implement No Avater feature */}
           <img src={loadBase64Img(user.avater!)} alt="avater" />
         </div>
         <div className="username">

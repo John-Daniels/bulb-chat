@@ -9,12 +9,14 @@ import { ResponsePayload } from "../../utils/types/response.type";
 import { profileStorageKey } from "../../constants/index.constant";
 import { useDispatch } from "react-redux";
 import { profileLoginAction } from "../../store/profile.slice";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Signup = () => {
   const navigate = useNavigate();
   const makeRequest = useRequest();
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -27,6 +29,8 @@ const Signup = () => {
 
     if (handleValidation()) {
       try {
+        setLoading(true);
+
         const { data: res } = await makeRequest.post(API.signup, form);
         const { status, message, data } = res as ResponsePayload;
 
@@ -34,11 +38,13 @@ const Signup = () => {
         // localStorage.setItem(profileStorageKey, user);
         data && dispatch(profileLoginAction(data));
         navigate("/");
-      } catch ({ response: { data: res } }) {
+      } catch ({ response: { data: res } }: any) {
         const { status, message, data } = res as ResponsePayload;
         if (status == "error") {
           data && Object.keys(data).map((key) => toast.error(data[key]));
         }
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -101,7 +107,9 @@ const Signup = () => {
           placeholder="Confirm Password"
           onChange={handleChange}
         />
-        <button type="submit">Create User</button>
+        <button type="submit">
+          {loading ? <CircularProgress size={20} /> : "Signup"}
+        </button>
         <span>
           Already have an account ? <Link to="/login">Login</Link>
         </span>

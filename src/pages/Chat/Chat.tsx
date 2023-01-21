@@ -28,9 +28,9 @@ const Chat = () => {
     if (user && user.avater == null) navigate("/avater");
   }, []);
 
-  useEffect(() => {
-    user && socket.emit("add-user", user.id);
-  }, [user]);
+  // useEffect(() => {
+  //   user && socket.emit("add-user", user.id);
+  // }, [user]);
 
   // get all contacts
   useEffect(() => {

@@ -10,12 +10,14 @@ import { profileStorageKey } from "../../constants/index.constant";
 import { useDispatch } from "react-redux/es/exports";
 import { profileUpdateAction } from "../../store/profile.slice";
 import { getItem } from "../../helpers/storage.helper";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Login = () => {
   const makeRequest = useRequest();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -30,16 +32,19 @@ const Login = () => {
 
     if (handleValidation()) {
       try {
+        setLoading(true);
         const { data: res } = await makeRequest.post(API.login, form);
         const { status, message, data } = res as ResponsePayload;
 
         data && dispatch(profileUpdateAction(data));
         navigate("/");
-      } catch ({ response: { data: res } }) {
+      } catch ({ response: { data: res } }: any) {
         const { status, message, data } = res as ResponsePayload;
         if (status == "error") {
           message && toast.error(message);
         }
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -84,7 +89,9 @@ const Login = () => {
           placeholder="Password"
           onChange={handleChange}
         />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? <CircularProgress size={20} /> : "Login"}
+        </button>
         <span>
           Already have an account ? <Link to="/signup">Signup</Link>
         </span>

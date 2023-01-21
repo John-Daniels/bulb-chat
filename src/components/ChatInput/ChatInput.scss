@@ -26,7 +26,7 @@
 
       .EmojiPickerReact {
         position: absolute;
-        top: -350px;
+        top: -360px;
         background-color: #080420;
         box-shadow: 0 5px 10px #9a86f3;
         border-color: #9a86f3;
@@ -51,7 +51,6 @@
         .epr-emoji-category-label {
           background-color: #080420;
         }
-
         .epr-preview {
           height: 55px;
         }
@@ -82,6 +81,7 @@
         outline: none;
       }
     }
+
     button {
       padding: 0.3rem 2rem;
       border-radius: 2rem;

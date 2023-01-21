@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import noImg from "../../assets/bulb.png";
-import { loadBase64Img } from "../../helpers/index.helper";
+import { getUserRoom, loadBase64Img } from "../../helpers/index.helper";
 import useRequest from "../../hooks/request.hook";
 import ChatInput from "../ChatInput/ChatInput";
 import Logout from "../Logout/Logout";
@@ -13,8 +13,7 @@ import { ProfileState } from "../../store/profile.slice";
 import { useAppSelector } from "../../store";
 import useSocket from "../../hooks/socket.hook";
 import { v4 as uuid } from "uuid";
-
-const getUserRoom = (users: string[]) => users.sort().join("_");
+import { Events } from "../../constants/events.constant";
 
 const ChatContainer = ({ chat }: { chat: any }) => {
   const navigate = useNavigate();
@@ -31,10 +30,10 @@ const ChatContainer = ({ chat }: { chat: any }) => {
 
   useEffect(() => {
     fetchMessages();
-    socket.emit("join-users", [user.username, chat.username]);
+    socket.emit(Events.join, [user.username, chat.username]);
 
     return () => {
-      socket.emit("leave-room", getUserRoom([user.username, chat.username]));
+      socket.emit(Events.leave, getUserRoom([user.username, chat.username]));
     };
   }, [chat]);
 
@@ -52,7 +51,7 @@ const ChatContainer = ({ chat }: { chat: any }) => {
       message: msg,
     });
 
-    socket.emit("send-msg", {
+    socket.emit(Events.sendMsg, {
       to: chat.username,
       from: user.username,
       message: msg,
@@ -66,7 +65,7 @@ const ChatContainer = ({ chat }: { chat: any }) => {
   };
 
   useEffect(() => {
-    socket.on("msg-receive", (msg) => {
+    socket.on(Events.recieveMsg, (msg) => {
       setArrivalMessage({ fromSelf: false, message: msg });
     });
   }, [chat]);

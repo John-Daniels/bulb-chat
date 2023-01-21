@@ -5,12 +5,12 @@ import { API_HOST } from '../constants/api.constant'
 
 const useSocket = () => {
         const socket = useMemo(() => io(API_HOST), [])
+
         useEffect(() => {
                 return () => {
                         socket.disconnect()
                 }
         }, [])
-
 
         return socket
 }
