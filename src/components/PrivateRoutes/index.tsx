@@ -19,7 +19,7 @@ const PrivateRoute = () => {
   const token = useAppSelector((state) => state.profileSlice?.accessToken);
 
   useEffect(() => {
-    getUserProfile();
+    token ? getUserProfile() : navigate("/login");
   }, []);
 
   const getUserProfile = () => {

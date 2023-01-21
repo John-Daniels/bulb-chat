@@ -14,6 +14,8 @@ import { useAppSelector } from "../../store";
 import useSocket from "../../hooks/socket.hook";
 import { v4 as uuid } from "uuid";
 
+const getUserRoom = (users: string[]) => users.sort().join("_");
+
 const ChatContainer = ({ chat }: { chat: any }) => {
   const navigate = useNavigate();
   const makeRequest = useRequest();
@@ -29,13 +31,17 @@ const ChatContainer = ({ chat }: { chat: any }) => {
 
   useEffect(() => {
     fetchMessages();
+    socket.emit("join-users", [user.username, chat.username]);
+
+    return () => {
+      socket.emit("leave-room", getUserRoom([user.username, chat.username]));
+    };
   }, [chat]);
 
   const fetchMessages = async () => {
     const { data } = await makeRequest.get(
       `${API.getUserMessages}/${chat._id}`
     );
-    console.log(data);
     setMessages(data.data);
   };
 
@@ -47,8 +53,8 @@ const ChatContainer = ({ chat }: { chat: any }) => {
     });
 
     socket.emit("send-msg", {
-      to: chat._id,
-      from: user._id,
+      to: chat.username,
+      from: user.username,
       message: msg,
     });
 
@@ -60,13 +66,10 @@ const ChatContainer = ({ chat }: { chat: any }) => {
   };
 
   useEffect(() => {
-    // if (socket) {
     socket.on("msg-receive", (msg) => {
-      console.log("message received", msg);
       setArrivalMessage({ fromSelf: false, message: msg });
     });
-    // }
-  }, []);
+  }, [chat]);
 
   useEffect(() => {
     arrivalMessage && setMessages((prev: any) => [...prev, arrivalMessage]);
@@ -96,7 +99,7 @@ const ChatContainer = ({ chat }: { chat: any }) => {
       {/* <Messages /> */}
       <div className="chat-messages">
         {messages.map((message: any, index) => (
-          <div>
+          <div key={index}>
             <div
               className={`message ${message.fromSelf ? "sent" : "recieved"} `}
               key={index}

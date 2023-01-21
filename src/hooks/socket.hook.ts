@@ -1,16 +1,18 @@
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { io } from 'socket.io-client'
 import { API_HOST } from '../constants/api.constant'
 
 const useSocket = () => {
+        const socket = useMemo(() => io(API_HOST), [])
+        useEffect(() => {
+                return () => {
+                        socket.disconnect()
+                }
+        }, [])
 
-        return (useCallback(
-                () => {
-                        return io(API_HOST)
-                },
-                [],
-        ))()
+
+        return socket
 }
 
 export default useSocket
