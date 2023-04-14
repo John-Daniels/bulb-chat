@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useRequest from "../../hooks/request.hook";
@@ -12,6 +12,7 @@ import { ResponsePayload } from "../../utils/types/response.type";
 import API from "../../constants/api.constant";
 import { useDispatch } from "react-redux";
 import { profileUpdateAction } from "../../store/profile.slice";
+import Config from "../../config/config";
 
 const ChooseAvater = () => {
   const api = "https://api.multiavatar.com/45678945";
@@ -50,11 +51,23 @@ const ChooseAvater = () => {
   const fetchAvater = async () => {
     const data: any = [];
     for (let i = 0; i < 4; i++) {
-      const image = await axios.get(
-        `${api}/${Math.round(Math.random() * 1000)}`
-      );
-      const buffer = new Buffer(image.data);
-      data.push(buffer.toString("base64"));
+      try {
+        const image = await axios.get(
+          `${api}/${Math.round(Math.random() * 1300)}`,
+          {
+            params: {
+              apiKey: Config.MULTIAVATER_APIKEY,
+            },
+          }
+        );
+
+        const buffer = new Buffer(image.data);
+        data.push(buffer.toString("base64"));
+      } catch (e: any) {
+        const image = e.response;
+        const buffer = new Buffer(image.data);
+        data.push(buffer.toString("base64"));
+      }
     }
 
     setLoading(false);
