@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux/es/hooks/useDispatch";
 import { useNavigate } from "react-router-dom";
 import { profileStorageKey } from "../constants/index.constant";
 import { useAppSelector } from "../store";
+import { API_HOST } from "../constants/api.constant";
 
 interface IinitialState {
         loading: boolean,
@@ -24,7 +25,7 @@ const useRequest = () => {
 
         const makeRequest = useCallback(
                 () => axios.create({
-                        baseURL: 'http://localhost:5000',
+                        baseURL: API_HOST,
                         headers: {
                                 common: {
                                         Authorization: token ? `Bearer ${token}` : ''

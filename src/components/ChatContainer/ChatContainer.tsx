@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import noImg from "../../assets/bulb.png";
-import { loadBase64Img } from "../../helpers/index.helper";
+import { getUserRoom, loadBase64Img } from "../../helpers/index.helper";
 import useRequest from "../../hooks/request.hook";
 import ChatInput from "../ChatInput/ChatInput";
 import Logout from "../Logout/Logout";
@@ -13,6 +13,7 @@ import { ProfileState } from "../../store/profile.slice";
 import { useAppSelector } from "../../store";
 import useSocket from "../../hooks/socket.hook";
 import { v4 as uuid } from "uuid";
+import { Events } from "../../constants/events.constant";
 
 const ChatContainer = ({ chat }: { chat: any }) => {
   const navigate = useNavigate();
@@ -29,13 +30,17 @@ const ChatContainer = ({ chat }: { chat: any }) => {
 
   useEffect(() => {
     fetchMessages();
+    socket.emit(Events.join, [user.username, chat.username]);
+
+    return () => {
+      socket.emit(Events.leave, getUserRoom([user.username, chat.username]));
+    };
   }, [chat]);
 
   const fetchMessages = async () => {
     const { data } = await makeRequest.get(
       `${API.getUserMessages}/${chat._id}`
     );
-    console.log(data);
     setMessages(data.data);
   };
 
@@ -46,9 +51,9 @@ const ChatContainer = ({ chat }: { chat: any }) => {
       message: msg,
     });
 
-    socket.emit("send-msg", {
-      to: chat._id,
-      from: user._id,
+    socket.emit(Events.sendMsg, {
+      to: chat.username,
+      from: user.username,
       message: msg,
     });
 
@@ -60,13 +65,10 @@ const ChatContainer = ({ chat }: { chat: any }) => {
   };
 
   useEffect(() => {
-    // if (socket) {
-    socket.on("msg-receive", (msg) => {
-      console.log("message received", msg);
+    socket.on(Events.recieveMsg, (msg) => {
       setArrivalMessage({ fromSelf: false, message: msg });
     });
-    // }
-  }, []);
+  }, [chat]);
 
   useEffect(() => {
     arrivalMessage && setMessages((prev: any) => [...prev, arrivalMessage]);
@@ -96,7 +98,7 @@ const ChatContainer = ({ chat }: { chat: any }) => {
       {/* <Messages /> */}
       <div className="chat-messages">
         {messages.map((message: any, index) => (
-          <div>
+          <div key={index}>
             <div
               className={`message ${message.fromSelf ? "sent" : "recieved"} `}
               key={index}
