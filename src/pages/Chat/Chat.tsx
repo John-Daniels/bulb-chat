@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +38,14 @@ const Chat = () => {
     makeRequest.get(API.allUsersRoute).then(({ data }) => {
       setContacts(data.data);
     });
+
+    const interval = setInterval(() => {
+      makeRequest.get(API.allUsersRoute).then(({ data }) => {
+        setContacts(data.data);
+      });
+    }, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleChatChange = (chat: any) => {

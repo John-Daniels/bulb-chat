@@ -1,4 +1,6 @@
-export const API_HOST = process.env.REACT_APP_API_URL as string || 'http://localhost:5000/'
+import Config from "../config/config"
+
+export const API_HOST = Config.API_URL || 'http://localhost:5000/'
 
 export enum API {
         signup = '/users/signup',
